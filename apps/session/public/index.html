@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>Codex Session Viewer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23FFFFFF'/%3E%3Ccircle cx='32' cy='32' r='22' fill='%231B1B18'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23FFFFFF'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/vendor/highlight.css">
+  <link rel="stylesheet" href="/base.css">
+  <link rel="stylesheet" href="/codex.css">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/vendor/marked.js" defer></script>
+  <script src="/vendor/purify.js" defer></script>
+  <script src="/vendor/highlight.js" defer></script>
+  <script src="/vendor/mermaid.js" defer></script>
+</head>
+<body>
+  <header>
+    <button class="mobile-nav-toggle" id="mobile-nav-toggle" type="button" aria-label="Open session navigation" data-i18n-aria="navigation.openNavigation" aria-expanded="false">☰</button>
+    <div class="logo"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="22" fill="#1B1B18"/><circle cx="32" cy="32" r="6" fill="#FFFFFF"/></svg></div>
+    <div class="brand-copy">
+      <h1>Codex Session Viewer</h1>
+      <div class="brand-kicker">Local workspace</div>
+    </div>
+    <div class="topbar-context"><span>Workspace</span><span class="divider">/</span><span class="topbar-project" id="top-project">Select session</span></div>
+    <button class="global-requests-toggle" id="global-requests-toggle" type="button" aria-label="View pending requests" data-i18n-aria="navigation.pendingRequests" aria-expanded="false" hidden><span data-i18n="navigation.pendingRequestsShort">Pending</span><span class="global-requests-count" id="global-requests-count">0</span></button>
+    <div class="locale-switcher" id="locale-switcher">
+      <button type="button" data-locale="en" aria-pressed="false">EN</button><button type="button" data-locale="zh-CN" aria-pressed="false">中文</button>
+    </div>
+    <div class="connection" id="connection" title="Checking service status" data-i18n-title="status.checkingService"><span class="connection-dot"></span><span id="connection-label" data-i18n="status.connecting">Connecting</span></div>
+    <aside class="global-requests-panel" id="global-requests-panel" aria-label="All pending requests" hidden></aside>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar" aria-label="Projects and sessions" data-i18n-aria="navigation.projectsAndSessions">
+      <div class="session-search" role="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+        <input id="session-search" type="search" placeholder="Search session titles…" data-i18n-placeholder="navigation.searchPlaceholder" autocomplete="off" spellcheck="false" aria-label="Search session titles" data-i18n-aria="navigation.searchSessions">
+        <button id="search-clear" type="button" aria-label="Clear search" title="Clear search" data-i18n-aria="actions.clearSearch" data-i18n-title="actions.clearSearch" hidden>×</button>
+      </div>
+      <div class="session-search-results" id="search-results" hidden></div>
+      <div class="sidebar-body" id="sidebar-content"><div class="active-empty">Loading projects…</div></div>
+    </aside>
+    <div class="resizer" id="resizer" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Resize sidebar" data-i18n-aria="actions.resizeSidebar" aria-valuemin="180" aria-valuemax="600" aria-valuenow="336"></div>
+    <div class="scrim" id="scrim" hidden></div>
+    <div class="chat-column conversation">
+      <div class="conversation-head" id="conversation-head">
+        <div class="session-pulse" id="thread-mark" aria-hidden="true"><span class="disc"></span><span class="core"></span></div>
+        <div class="conversation-heading">
+          <h2 id="thread-title" data-i18n="navigation.selectASession">Select a session</h2>
+          <div class="conversation-path"><span id="thread-project">—</span><span>·</span><span id="thread-meta" data-i18n="navigation.localCodexSessions">Local Codex sessions</span><button class="thread-fork-link" id="thread-fork" type="button" hidden data-i18n="actions.viewForkSource">View fork source</button></div>
+        </div>
+        <div class="conversation-state" id="thread-status" aria-live="polite"><span class="status-dot idle"></span><span class="label" data-i18n="status.notSelected">Not selected</span></div>
+      </div>
+      <main class="chat-area timeline" id="timeline" aria-label="Conversation content" data-i18n-aria="navigation.conversationContent">
+        <div class="empty-chat"><p>Select a session to view the conversation</p></div>
+      </main>
+      <aside class="conversation-rail" id="conversation-rail" aria-label="User messages in this session" data-i18n-aria="navigation.userMessages" hidden>
+        <div class="conversation-rail-list" id="conversation-rail-list"></div>
+      </aside>
+      <aside class="git-rail" id="git-rail" aria-label="Documents and Git tools" data-i18n-aria="navigation.tools" hidden>
+        <button class="git-rail-button arch-viewer-button" id="arch-viewer-button" type="button" aria-label="Open Arch Viewer" data-i18n-aria="actions.openArchViewer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="5" rx="1"/><rect x="14" y="4" width="6" height="5" rx="1"/><rect x="9" y="15" width="6" height="5" rx="1"/><path d="M7 9v3h10V9M12 12v3"/></svg>
+          <span class="git-rail-tooltip" role="tooltip"><span class="git-tooltip-kicker">Architecture</span><strong>Open Arch Viewer</strong><span class="git-tooltip-copy">View and manage architecture documents</span></span>
+        </button>
+        <button class="git-rail-button plan-viewer-button" id="plan-viewer-button" type="button" aria-label="Open Plan Viewer" data-i18n-aria="actions.openPlanViewer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+          <span class="git-rail-tooltip" role="tooltip"><span class="git-tooltip-kicker">Plans</span><strong>Open Plan Viewer</strong><span class="git-tooltip-copy">View and manage change plans</span></span>
+        </button>
+        <button class="git-rail-button collect-viewer-button" id="collect-viewer-button" type="button" aria-label="Open Collect Viewer" data-i18n-aria="actions.openCollectViewer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/></svg>
+          <span class="git-rail-tooltip" role="tooltip"><span class="git-tooltip-kicker">Collections</span><strong>Open Collect Viewer</strong><span class="git-tooltip-copy">View, edit, and archive collections</span></span>
+        </button>
+        <button class="git-rail-button git-review-control branch" id="git-branch-button" type="button" aria-label="View current Git branch" data-i18n-aria="actions.viewGitBranch">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="5" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="19" r="2"/><path d="M6 7v10M8 11h4a6 6 0 0 0 6-3V8"/></svg>
+          <span class="git-rail-tooltip git-branch-tooltip" role="tooltip">
+            <span class="git-tooltip-kicker">Git context</span>
+            <span class="git-tooltip-grid"><span>Current branch</span><code id="git-current-branch">—</code><span>Baseline</span><code id="git-base-branch">—</code><span>Source</span><code id="git-base-source">—</code></span>
+            <span class="git-tooltip-note" id="git-base-note"></span>
+          </span>
+        </button>
+        <button class="git-rail-button git-review-control graph" id="git-graph-button" type="button" aria-label="View commit graph with Difgraph" data-i18n-aria="actions.viewCommitGraph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="5" r="2"/><circle cx="17" cy="7" r="2"/><circle cx="8" cy="18" r="2"/><path d="M7.8 5.7 15.2 6.6M16 8.7 9 16.4M6.6 7l1 9"/></svg>
+          <span class="git-rail-tooltip" role="tooltip"><span class="git-tooltip-kicker">Commit graph</span><strong>View commit graph</strong><span class="git-tooltip-copy" id="git-graph-summary" data-i18n="git.openDifgraphNewTab">Open Difgraph in a new tab</span></span>
+        </button>
+        <button class="git-rail-button git-review-control" id="git-staged-button" type="button" aria-label="Review staged changes with Difit" data-i18n-aria="actions.viewStagedChanges">
+          <span class="git-rail-badge" id="git-staged-count" hidden></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h5M8 17h7"/></svg>
+          <span class="git-rail-tooltip" role="tooltip"><span class="git-tooltip-kicker">Staged changes</span><strong>View staged changes</strong><span class="git-tooltip-copy" id="git-staged-summary" data-i18n="status.loading">Loading…</span></span>
+        </button>
+        <button class="git-rail-button git-review-control commit" id="git-committed-button" type="button" aria-label="Review committed changes with Difit" data-i18n-aria="actions.viewCommittedChanges">
+          <span class="git-rail-badge" id="git-committed-count" hidden></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M3 12h6M15 12h6"/></svg>
+          <span class="git-rail-tooltip" role="tooltip"><span class="git-tooltip-kicker">Committed changes</span><strong>View committed changes</strong><span class="git-tooltip-copy" id="git-committed-summary" data-i18n="status.loading">Loading…</span></span>
+        </button>
+      </aside>
+      <div id="note-dock">
+        <section class="request-dock" id="request-dock" aria-label="Pending requests" data-i18n-aria="navigation.pendingRequests" hidden></section>
+        <div class="thread-readonly-state" id="thread-readonly-state" hidden><span id="thread-readonly-message"></span><button id="activate-thread" type="button" hidden data-i18n="actions.loadSession">Load session to continue</button></div>
+        <div class="ann-preview">
+          <section class="ann-section ann-list-section" id="annotation-list" hidden>
+            <div class="ann-preview-head">
+              <span class="ann-list-title" id="annotation-list-title" data-i18n="annotations.title0">Annotations (0)</span>
+              <button class="clear-btn ann-list-clear" id="annotation-clear" type="button" title="Clear all annotations" aria-label="Clear all annotations" data-i18n-title="actions.clearAnnotations" data-i18n-aria="actions.clearAnnotations"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+            </div>
+            <div class="ann-preview-body" id="annotation-body" aria-label="Pending annotations" data-i18n-aria="navigation.pendingAnnotations"></div>
+          </section>
+          <section class="ann-section ann-note-section composer" id="composer">
+            <div class="ann-preview-head composer-controls">
+              <span data-i18n="composer.note">Note</span>
+              <span class="model-badge-wrap">
+                <button class="model-badge" id="composer-model-toggle" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="composer-model-menu" title="Switch model and reasoning effort" data-i18n-title="actions.modelAndEffort" disabled><span class="model-dot"></span><span class="model-name" id="composer-model">Codex</span><span class="model-effort" id="composer-effort"></span></button>
+                <div class="model-menu" id="composer-model-menu" role="menu" aria-label="Model and reasoning effort" data-i18n-aria="actions.modelAndEffort" hidden>
+                  <section class="model-menu-section" aria-labelledby="model-menu-models-label">
+                    <div class="model-menu-label" id="model-menu-models-label" data-i18n="common.models">Models</div>
+                    <div id="composer-model-options"></div>
+                  </section>
+                  <section class="model-menu-section" aria-labelledby="model-menu-effort-label">
+                    <div class="model-menu-label" id="model-menu-effort-label" data-i18n="common.reasoningEffort">Reasoning effort</div>
+                    <div class="model-effort-options" id="composer-effort-options"></div>
+                  </section>
+                  <div class="model-menu-hint" id="composer-model-hint" hidden></div>
+                </div>
+              </span>
+              <span class="model-token-group" id="composer-token-group" aria-label="Token usage from the latest model call" data-i18n-aria="status.latestTokenUsage" hidden>
+                <span class="model-token model-token-in" id="composer-token-in" title="Input tokens from the latest model call" data-i18n-title="status.inputTokens"></span>
+                <span class="model-token model-token-out" id="composer-token-out" title="Output tokens from the latest model call" data-i18n-title="status.outputTokens"></span>
+              </span>
+              <button class="composer-restart" id="composer-restart" type="button" title="Restart Codex app-server and refresh Session Viewer" aria-label="Restart Codex app-server and refresh Session Viewer" data-i18n-title="actions.restartAppServer" data-i18n-aria="actions.restartAppServer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6v5h-5"/><path d="M19 11a7 7 0 1 0 1 5"/></svg></button>
+              <button class="composer-mode-toggle" id="composer-mode-toggle" type="button" aria-pressed="false" title="Switch to Plan mode" data-i18n-title="actions.switchToPlanMode"><span class="composer-mode-dot"></span><span id="composer-mode-label" data-i18n="common.default">Default</span></button>
+              <span class="workflow-reminder" data-i18n="composer.customReminder">Stay hungry, stay foolish. (Customizable)</span>
+              <span class="working-indicator" id="working-indicator" hidden><span class="working-dots"><span></span><span></span><span></span></span><span id="composer-status" data-i18n="status.codexWorking">Codex is working</span><button class="interrupt-btn" id="interrupt" type="button" hidden data-i18n="actions.interrupt">Interrupt</button></span>
+              <button class="compact-btn composer-compact" id="composer-compact" type="button" title="Compact context (/compact)" aria-label="Compact context" data-i18n-title="actions.compactContext" data-i18n-aria="actions.compactContext"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 4 4 4-4M12 7V2M8 21l4-4 4 4M12 17v5"/></svg></button>
+              <button class="copy-btn ann-note-copy" id="composer-copy" type="button" title="Copy input" aria-label="Copy input" data-i18n-title="actions.copyInput" data-i18n-aria="actions.copyInput"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2 2v1"/></svg></button>
+              <button class="clear-btn ann-note-clear" id="composer-clear" type="button" title="Clear input" aria-label="Clear input" data-i18n-title="actions.clearInput" data-i18n-aria="actions.clearInput"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+              <button class="send-btn ann-note-send" id="send" type="button" title="Send message" aria-label="Send message" data-i18n-title="actions.sendMessage" data-i18n-aria="actions.sendMessage" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
+            </div>
+            <div class="img-paste-tray" id="composer-image-tray" aria-label="Pending images" data-i18n-aria="composer.pendingImages" aria-hidden="true"></div>
+            <div class="send-status" aria-live="polite"><span class="spinner"></span><span class="send-status-text" id="composer-send-status"></span></div>
+            <textarea class="ann-note-editor" id="composer-text" aria-label="Message to Codex" placeholder="Write a note here. Enter sends, Shift+Enter inserts a newline" data-i18n-aria="actions.messageToCodex" data-i18n-placeholder="composer.placeholder" disabled></textarea>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="toast-region" id="toast-region" aria-live="assertive" aria-atomic="true"></div>
+  <script src="/runtime-config.js"></script>
+  <script type="module" src="/app/i18n.js"></script>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

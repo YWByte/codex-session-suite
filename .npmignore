@@ -1,0 +1,9 @@
+.github/
+test/
+apps/**/test/
+config.toml
+*.log
+.DS_Store
+coverage/
+playwright-report/
+test-results/

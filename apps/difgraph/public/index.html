@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>difgraph</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <div class="repository-heading">
+      <strong>difgraph</strong>
+      <div id="directory-control"><span data-i18n="directory">Directory</span><button id="directory-select" type="button" data-i18n-label="chooseDirectory" data-i18n-title="chooseDirectory"><span id="repo-label" data-i18n="loadingRepository">Reading repository…</span></button></div>
+      <label id="branch-control" hidden><span data-i18n="branch">Branch</span> <select id="branch-select" data-i18n-label="branch"></select></label>
+    </div>
+    <div class="header-controls">
+      <label class="locale-control"><span data-i18n="language">Language</span><select id="locale-select" aria-label="Language"><option value="en">English</option><option value="zh-CN">简体中文</option></select></label>
+      <button id="refresh" type="button" data-i18n="refresh">Refresh</button>
+    </div>
+  </header>
+  <main>
+    <section class="history-panel" data-i18n-label="commitHistory">
+      <div id="history-status" class="notice" data-i18n="loadingHistory">Loading commit history…</div>
+      <div id="history" class="history"></div>
+    </section>
+    <section id="detail-panel" class="detail-panel" aria-live="polite">
+      <div class="empty" data-i18n="selectCommit">Select a commit to view details</div>
+    </section>
+  </main>
+  <script src="/runtime-config.js"></script>
+  <script src="/i18n.js"></script>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

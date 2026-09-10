@@ -1,0 +1,54 @@
+{
+  "name": "codex-session-suite",
+  "version": "1.0.0",
+  "description": "Local-first Codex session, plan, architecture, collection, and Git review suite",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "codex-session-suite": "./bin/codex-session-suite.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "apps/*/public/**",
+    "apps/*/src/**",
+    "apps/*/bin/**",
+    "apps/*/server.js",
+    "bin/**",
+    "src/**",
+    "docs/screenshots/**",
+    "config.example.toml",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE",
+    "SECURITY.md",
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "scripts": {
+    "start": "node ./bin/codex-session-suite.js start",
+    "doctor": "node ./bin/codex-session-suite.js doctor",
+    "test": "node --test test/config.test.js test/document-viewers.test.js apps/session/test/*.test.js apps/collect/test/*.test.js apps/difgraph/test/*.test.js apps/plan/test/*.test.js apps/arch/test/*.test.js",
+    "test:shell": "node apps/session/test/e2e-shell.mjs",
+    "check:release": "node ./src/release-audit.js",
+    "pack:check": "npm pack --dry-run --json",
+    "test:pack": "node --test test/package-smoke.test.js"
+  },
+  "dependencies": {
+    "@highlightjs/cdn-assets": "^11.11.1",
+    "difit": "5.0.12",
+    "dompurify": "^3.4.15",
+    "express": "^5.1.0",
+    "katex": "^0.16.21",
+    "marked": "^15.0.12",
+    "mermaid": "^11.17.2",
+    "smol-toml": "^1.4.2"
+  },
+  "devDependencies": {
+    "pixelmatch": "^7.1.0",
+    "playwright": "^1.63.0",
+    "pngjs": "^7.0.0"
+  }
+}

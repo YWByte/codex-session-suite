@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Collect Viewer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23fff'/%3E%3Cpath d='M32 11l6.5 13.2 14.5 2.1-10.5 10.2 2.5 14.4L32 44.1 19 50.9l2.5-14.4L11 26.3l14.5-2.1z' fill='%23cc785c'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <div class="logo" aria-hidden="true">★</div>
+    <h1>Collect Viewer</h1><label class="locale-control"><span data-i18n="language">Language</span><select id="locale-select" aria-label="Language"><option value="en">English</option><option value="zh-CN">简体中文</option></select></label>
+  </header>
+  <div class="layout">
+    <aside class="sidebar" data-i18n-label="active" aria-label="Collections">
+      <button class="nav-item active" data-view="active"><span data-i18n="active">Collections</span><strong id="active-count">0</strong></button>
+      <button class="nav-item" data-view="archived"><span data-i18n="archived">Archived</span><strong id="archived-count">0</strong></button>
+    </aside>
+    <main>
+      <div class="main-header">
+        <div><p class="eyebrow" id="eyebrow">Collections</p><h2 id="title">Collections</h2></div>
+        <div class="header-actions">
+          <button class="refresh" id="refresh" type="button" data-i18n="refresh">Refresh</button>
+          <button class="create" id="create" type="button" data-i18n="create">New collection</button>
+        </div>
+      </div>
+      <p class="status" id="status" role="status"></p>
+      <section class="cards" id="cards" aria-live="polite"></section>
+    </main>
+  </div>
+  <dialog id="create-dialog" aria-labelledby="create-title">
+    <form method="dialog" class="create-form" id="create-form">
+      <h3 id="create-title" data-i18n="createTitle">New collection</h3>
+      <label><span><span data-i18n="quote">Quote</span> <em data-i18n="required">Required</em></span><textarea id="create-quote" maxlength="65536" required data-i18n-label="quoteLabel" aria-label="Collection quote"></textarea></label>
+      <label><span data-i18n="note">Note</span><textarea id="create-note" maxlength="32768" data-i18n-label="noteOptional" aria-label="Collection note (optional)"></textarea></label>
+      <label><span data-i18n="origin">Source</span><input type="text" id="create-origin" maxlength="2048" data-i18n-placeholder="originPlaceholder" placeholder="For example: Chapter 3 of a book" data-i18n-label="originOptional" aria-label="Source (optional)"></label>
+      <p class="create-error" id="create-error" role="alert"></p>
+      <div class="create-actions">
+        <button type="button" class="cancel" id="create-cancel" data-i18n="cancel">Cancel</button>
+        <button type="submit" class="save" id="create-save" disabled data-i18n="saveCollection">Save collection</button>
+      </div>
+    </form>
+  </dialog>
+  <template id="card-template">
+    <article class="card">
+      <div class="quote-container">
+        <blockquote class="quote"></blockquote>
+        <div class="quote-tools">
+          <button class="quote-copy" type="button" data-i18n-label="copyMarkdown" data-i18n-title="copyMarkdown" aria-label="Copy quote Markdown source" title="Copy quote Markdown source">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"/></svg>
+          </button>
+          <button class="quote-toggle" type="button" hidden aria-expanded="false" data-i18n-label="expand" data-i18n-title="expand" aria-label="Expand quote" title="Expand quote">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+          </button>
+        </div>
+      </div>
+      <p class="note-label" data-i18n="noteLabel">Collection note</p>
+      <p class="note"></p>
+      <div class="edit-area" hidden>
+        <textarea data-i18n-label="noteLabel" aria-label="Collection note" maxlength="32768"></textarea>
+        <div class="edit-actions"><button class="cancel" type="button" data-i18n="cancel">Cancel</button><button class="save" type="button" data-i18n="save">Save</button></div>
+      </div>
+      <dl class="meta">
+        <div><dt data-i18n="role">Role</dt><dd class="role"></dd></div>
+        <div><dt data-i18n="project">Project</dt><dd class="project"></dd></div>
+        <div><dt data-i18n="session">Session / Source</dt><dd class="session"></dd></div>
+        <div><dt data-i18n="created">Collected at</dt><dd class="created"></dd></div>
+      </dl>
+      <div class="actions"><a class="source" target="_blank" rel="noopener noreferrer">View source</a><button class="edit" type="button">Edit collection note</button><button class="archive" type="button"></button><button class="delete" type="button" hidden>Delete</button></div>
+    </article>
+  </template>
+  <script src="/runtime-config.js"></script>
+  <script src="/i18n.js"></script>
+  <script src="/vendor/marked.js"></script>
+  <script src="/vendor/purify.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

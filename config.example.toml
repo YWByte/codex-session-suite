@@ -1,0 +1,33 @@
+# All services bind to the loopback interface only.
+[services]
+session_port = 3460
+plan_port = 3458
+arch_port = 3459
+collect_port = 3461
+
+# Use "auto", "en", or "zh-CN".
+[ui]
+locale = "auto"
+open_browser = true
+
+[codex]
+# Leave bin empty to resolve codex from PATH.
+bin = ""
+# Leave home empty to use CODEX_HOME or ~/.codex-cli.
+home = ""
+expected_version = "0.153.2"
+
+[timeouts]
+rpc_ms = 15000
+initialize_ms = 20000
+folder_picker_ms = 120000
+file_picker_ms = 120000
+
+[limits]
+thread_pages = 1000
+
+[data]
+# Empty values are derived from the Codex home directory.
+plans_dir = ""
+arch_dir = ""
+collect_file = ""
