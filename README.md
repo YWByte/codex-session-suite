@@ -2,6 +2,7 @@
 
 # ✨ Codex Session Suite
 
+**If you regularly use CLI tools, Codex, or similar AI assistants, this is a suite you won’t want to miss.**<br>
 **A local-first visual workspace for Codex conversations, plans, architecture knowledge, collections, and Git review.**
 
 <p>
