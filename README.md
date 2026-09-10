@@ -4,6 +4,28 @@ Codex Session Suite is a local-first web workspace for Codex conversations, plan
 
 [简体中文](./README.zh-CN.md)
 
+## Recommended model rules
+
+Plan and Arch can display a document only after the model writes it to the directory watched by the suite. **We strongly recommend adding the configured Plan and Arch storage paths to your model rules (system or developer instructions).** The defaults are `~/.codex-cli/plans` and `~/.codex-cli/arch`; if you customize `[data].plans_dir` or `[data].arch_dir`, use those paths instead. Give the model expanded absolute paths rather than relying on `~`.
+
+For example, add rules equivalent to:
+
+```text
+Save Plan documents under <absolute-path-to-plan-directory>.
+Save Arch documents under <absolute-path-to-arch-directory>.
+When referencing local files in a conversation, use absolute paths and include line and column positions when useful.
+```
+
+This keeps generated documents discoverable and makes file references actionable in the conversation viewer.
+
+## Features by goal
+
+- **Session — continue and navigate conversations:** Browse Codex sessions in a focused chat interface. Source locations can open in VS Code with one click, including a specific line and column. Other absolute local paths can open with the operating system's default application.
+- **Plan — make plans easy to review:** Keep implementation plans in one viewer so you can read, compare, annotate, and update the intended work before or during execution.
+- **Arch — organize code and existing knowledge:** Capture how the current codebase works, connect relevant source locations, and preserve existing architectural or domain knowledge for later reference.
+- **Collect — retain reusable material:** Save useful excerpts and references outside an individual conversation.
+- **Difgraph and Difit — inspect changes:** Review repository relationships and Git diffs without mixing them into the conversation flow.
+
 ## Screenshots
 
 All screenshots use an isolated demo workspace with no personal sessions, documents, collections, or source repositories.
