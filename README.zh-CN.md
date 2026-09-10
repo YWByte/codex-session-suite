@@ -10,6 +10,8 @@
   ·
   <a href="#-快速开始">快速开始</a>
   ·
+  <a href="./docs/INTEGRATION.zh-CN.md">接入指南</a>
+  ·
   <a href="#-界面预览">界面预览</a>
   ·
   <a href="https://github.com/YWByte/codex-session-suite/issues">问题反馈</a>

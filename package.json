@@ -17,6 +17,7 @@
     "apps/*/server.js",
     "bin/**",
     "src/**",
+    "docs/*.md",
     "docs/screenshots/**",
     "config.example.toml",
     "README.md",

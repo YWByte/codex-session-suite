@@ -10,6 +10,8 @@
   ·
   <a href="#-quick-start">Quick start</a>
   ·
+  <a href="./docs/INTEGRATION.md">Integration guide</a>
+  ·
   <a href="#-workspace-preview">Screenshots</a>
   ·
   <a href="https://github.com/YWByte/codex-session-suite/issues">Issues</a>
